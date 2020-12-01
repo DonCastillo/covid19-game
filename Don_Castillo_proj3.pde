@@ -9,7 +9,7 @@
  @desc: Global Variables
  ************************/
 PFont font;
-PImage coronaBG, chinaMap;
+PImage coronaBG, chinaMap, person;
 int sceneIndicator = 0;
 int TOTAL_SCENES = 6;
 
@@ -22,6 +22,10 @@ boolean displayCases;
 boolean displayVirus;
 ArrayList<RedDot> particles;
 
+// scene4
+Person[] persons;
+int numOfPress = 0;
+
  
 void setup(){
   size(1000, 600);
@@ -33,9 +37,11 @@ void setup(){
   // load all images
   coronaBG = loadImage("corona.jpg");
   chinaMap = loadImage("china.png");
+  person = loadImage("person.png");
   setSceneOne();
   setSceneTwo();
   setSceneThree();
+  setSceneFour();
 }
 
 
@@ -50,14 +56,14 @@ void draw() {
     case 1:
       //sceneTwo();
       //println("scene1");
-        //println(wave);
       break;
     case 2:
-      sceneThree();
-      println("scene3");
+      //sceneThree();
+      //println("scene3");
       break;
     case 3:
-      //println("scene3");
+      sceneFour();
+      
       break;
     case 4:
       //println("scene4");
@@ -112,6 +118,66 @@ void keyPressed() {
   }
 }
 
+void keyReleased() {
+  if (sceneIndicator == 3) {
+    if (key == CODED) {
+      if (keyCode == UP) {
+          int movement = 20;
+          numOfPress++;
+          if (numOfPress <= 6) {
+            persons[0].x = persons[0].x - movement;
+            persons[0].y = persons[0].y - movement;
+            
+            persons[1].x = persons[1].x + movement;
+            persons[1].y = persons[1].y - movement;
+            
+            persons[2].x = persons[2].x - movement;
+            persons[2].y = persons[2].y + movement;
+            
+            persons[3].x = persons[3].x + movement;
+            persons[3].y = persons[3].y + movement;
+          } 
+          println("here");
+      }
+    }
+  }
+}
+
+
+
+/***********************
+ @desc: scene 4
+ ************************/
+void setSceneFour(){
+   persons = new Person[4];
+   int offset = 20;
+   int personWidth = 50;
+   int personHeight = 120;
+   persons[0] = new Person(width/3 - offset , height/2 - offset, personWidth, personHeight); // topleft
+   persons[1] = new Person(width/3 + offset , height/2 - offset, personWidth, personHeight); // topright
+   persons[2] = new Person(width/3 - offset , height/2 + offset, personWidth, personHeight); // bottomleft
+   persons[3] = new Person(width/3 + offset , height/2 + offset, personWidth, personHeight); // bottomright
+   
+   
+}
+ 
+void sceneFour() {
+  background(0, 255, 255);
+  persons[0].display();
+  persons[1].display();
+  persons[2].display();
+  persons[3].display();
+  // textbox
+  if (numOfPress >= 6) {
+    String firstText = "Social distancing is they key\nto minimize the spread of COVID-19.";
+    TextBox firstBox = new TextBox(556, 397, 400, 70, firstText, 24);
+    firstBox.display();
+  }
+}
+ /***********************
+ @desc: End of scene 3
+ ************************/
+
 
 
 /***********************
@@ -124,6 +190,7 @@ void keyPressed() {
  
  void sceneThree() {
   background(255);
+
   // add everytime
   if (displayVirus) {
     // add particles where mouse is pressed
@@ -141,6 +208,7 @@ void keyPressed() {
       int direction = i % 8;
       redDot.setSpeed(1);
       redDot.display();
+      
       switch(direction) {
         case 0:
           redDot.ascend();
@@ -169,6 +237,19 @@ void keyPressed() {
       }
     }
   }
+  // mouse image
+  pushMatrix();
+    imageMode(CENTER);
+    image(person, mouseX, mouseY, 50, 120);
+  popMatrix();
+  
+  // information
+  String firstText = "The COVID-19 particles can\nspread through the air and\ninfect others.";
+  TextBox firstBox = new TextBox(556, 397, 300, 100, firstText, 24);
+  firstBox.display();
+  String secondText = "Click anywhere in the screen.";
+  TextBox secondBox = new TextBox(556, 500, 325, 35, secondText, 24);
+  secondBox.display();
 }
  /***********************
  @desc: End of scene 3
