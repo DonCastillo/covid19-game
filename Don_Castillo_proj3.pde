@@ -18,6 +18,10 @@ RedDot[] otherCases;
 RedDot initialCase;
 boolean displayCases;
 
+// scene 3
+boolean displayVirus;
+ArrayList<RedDot> particles;
+
  
 void setup(){
   size(1000, 600);
@@ -31,6 +35,7 @@ void setup(){
   chinaMap = loadImage("china.png");
   setSceneOne();
   setSceneTwo();
+  setSceneThree();
 }
 
 
@@ -43,12 +48,13 @@ void draw() {
       //println("scene0");
       break;
     case 1:
-      sceneTwo();
+      //sceneTwo();
       //println("scene1");
         //println(wave);
       break;
     case 2:
-      //println("scene2");
+      sceneThree();
+      println("scene3");
       break;
     case 3:
       //println("scene3");
@@ -77,7 +83,10 @@ void mousePressed() {
         cursor(ARROW);
       }
     }
-    /** scene 2 controls ********************/
+    /** scene 3 controls ********************/
+    if (sceneIndicator == 2) {
+      displayVirus = true;
+    }
 }
 
 
@@ -102,6 +111,69 @@ void keyPressed() {
       break;
   }
 }
+
+
+
+/***********************
+ @desc: scene 3
+ ************************/
+ void setSceneThree(){
+   displayVirus = false;
+   particles = new ArrayList<RedDot>();
+ }
+ 
+ void sceneThree() {
+  background(255);
+  // add everytime
+  if (displayVirus) {
+    // add particles where mouse is pressed
+    int offsetX = int(random(0.00, 50.00));
+    int offsetY = int(random(0.00, 50.00));
+    if (mousePressed) {
+          particles.add(new RedDot(mouseX - offsetX, mouseY + offsetY, 20, -10));
+          particles.add(new RedDot(mouseX + offsetX, mouseY + offsetY, 20, -10));
+          particles.add(new RedDot(mouseX + offsetX, mouseY - offsetY, 20, -10));
+          particles.add(new RedDot(mouseX - offsetX, mouseY - offsetY, 20, -10));
+    }
+    
+    for(int i = 0; i < particles.size(); i++) {
+      RedDot redDot = particles.get(i);
+      int direction = i % 8;
+      redDot.setSpeed(1);
+      redDot.display();
+      switch(direction) {
+        case 0:
+          redDot.ascend();
+          break;
+        case 1:
+          redDot.descend();
+          break;
+        case 2:
+          redDot.forward();
+          break;
+        case 3:
+          redDot.backward();
+          break;
+        case 4:
+          redDot.toBottomLeft();
+          break;
+        case 5:
+          redDot.toBottomRight();
+          break;
+        case 6:
+          redDot.toTopLeft();
+          break;
+        case 7:
+          redDot.toTopRight();
+          break;
+      }
+    }
+  }
+}
+ /***********************
+ @desc: End of scene 3
+ ************************/
+
 
 
 /***********************

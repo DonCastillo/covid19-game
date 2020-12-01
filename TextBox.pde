@@ -31,5 +31,5 @@ class TextBox {
     text(text, x, y);
     noFill();
     popMatrix();
-  }
+  } 
 }
