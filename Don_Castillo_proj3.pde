@@ -15,7 +15,9 @@ int TOTAL_SCENES = 6;
 
 // scene 2 global variables
 RedDot[] otherCases;
-RedDot hubeiCase;
+RedDot initialCase;
+boolean displayCases;
+
  
 void setup(){
   size(1000, 600);
@@ -33,37 +35,65 @@ void setup(){
 
 
 void draw() {
-  sceneTwo();
-  //switch(sceneIndicator) {
-  //  case 0:
-  //    sceneOne();
-  //    println("scene0");
-  //    break;
-  //  case 1:
-  //    sceneTwo();
-  //    println("scene1");
-  //    break;
-  //  case 2:
-  //    println("scene2");
-  //    break;
-  //  case 3:
-  //    println("scene3");
-  //    break;
-  //  case 4:
-  //    println("scene4");
-  //    break;
-  //  case 5:
-  //    println("scene5");
-  //    break;
-  //  case 6:
-  //    println("scene6");
-  //    break;
-  //}  
+  //sceneTwo();
+  //println(wave);
+  switch(sceneIndicator) {
+    case 0:
+      //sceneOne();
+      //println("scene0");
+      break;
+    case 1:
+      sceneTwo();
+      //println("scene1");
+        //println(wave);
+      break;
+    case 2:
+      //println("scene2");
+      break;
+    case 3:
+      //println("scene3");
+      break;
+    case 4:
+      //println("scene4");
+      break;
+    case 5:
+      //println("scene5");
+      break;
+    case 6:
+      //println("scene6");
+      break;
+  }  
 }
 
 void mousePressed() {
-  println("x: " + mouseX + " y: " + mouseY);
+    println("x: " + mouseX + " y: " + mouseY);
+    /** scene 2 controls ********************/
+    if (sceneIndicator == 1) {
+      if ((mouseX >= 430 && mouseX <= 450) && (mouseY >= 260 && mouseY <= 280)) {
+        cursor(HAND);
+        println("HERE");
+        displayCases = true;
+      } else {
+        cursor(ARROW);
+      }
+    }
+    /** scene 2 controls ********************/
 }
+
+
+
+void mouseMoved() {
+    /** scene 2 controls ********************/
+    if (sceneIndicator == 1) {
+      if ((mouseX >= 430 && mouseX <= 450) && (mouseY >= 260 && mouseY <= 280)) {
+        cursor(HAND);
+      } else {
+        cursor(ARROW);
+      }
+    }
+    /** scene 2 controls ********************/
+}
+
 
 void keyPressed() {
   switch(keyCode) {
@@ -78,10 +108,31 @@ void keyPressed() {
  @desc: scene2
  ************************/
 void setSceneTwo(){
-  hubeiCase = new RedDot(440, 270, 10);
-  //redDots = new RedDot[20];
+  displayCases = false;
+  initialCase = new RedDot(440, 270, 20, 0);
+  otherCases = new RedDot[21];
   
-  
+  otherCases[0] = new RedDot(456, 229, 10, -50);
+  otherCases[1] = new RedDot(418, 245, 10, -1);
+  otherCases[2] = new RedDot(463, 290, 10, -11);
+  otherCases[3] = new RedDot(478, 259, 10, -18);
+  otherCases[4] = new RedDot(419, 240, 10, -24);
+  otherCases[5] = new RedDot(445, 243, 10, -30);
+  otherCases[6] = new RedDot(412, 332, 10, -70);
+  otherCases[7] = new RedDot(395, 218, 10, -6);
+  otherCases[8] = new RedDot(378, 244, 10, -67);
+  otherCases[9] = new RedDot(269, 262, 10, -9);
+  otherCases[10] = new RedDot(184, 232, 10, -68);
+  otherCases[11] = new RedDot(368, 335, 10, -35);
+  otherCases[12] = new RedDot(380, 285, 10, -7);
+  otherCases[13] = new RedDot(487, 296, 10, -81);
+  otherCases[14] = new RedDot(456, 229, 10, -51);
+  otherCases[15] = new RedDot(505, 314, 10, -82);
+  otherCases[16] = new RedDot(451, 330, 10, -74);
+  otherCases[17] = new RedDot(259, 163, 10, -50);
+  otherCases[18] = new RedDot(367, 172, 10, -23);
+  otherCases[19] = new RedDot(217, 271, 10, -24);
+  otherCases[20] = new RedDot(539, 284, 10, -66);
 }
 
 void sceneTwo(){
@@ -92,10 +143,34 @@ void sceneTwo(){
     imageMode(CORNERS);
     image(chinaMap, 0, 0, 649, 427);
     
-    // cases
-    hubeiCase.display();    
+    // textbox
+    if (!displayCases) {
+      String firstText = "The first cases of COVID-19\nwere first detected in Wuhan, China\nin late 2019.";
+      String secondText = "Click the red button where\nthe city of Wuhan is.";
+      TextBox firstBox = new TextBox(556, 397, 400, 100, firstText, 24);
+      TextBox secondBox = new TextBox(556, 500, 250, 60, secondText, 20);
+      firstBox.display();
+      secondBox.display();
+    }
+
+    
+    // initial case
+    initialCase.display();
+    
+    // more cases
+    // show everything here once the button is clicked
+    if (displayCases) {
+      for(RedDot c : otherCases)
+        c.display(); 
+      String thirdText = "It then spreads throughout the\nnearby cities and provinces\nprompting the authorities to\nlock them down.";
+      TextBox thirdBox = new TextBox(556, 397, 340, 125, thirdText, 24);
+      thirdBox.display();
+    }
   popMatrix();
 }
+/***********************
+ @desc: End of scene2
+ ************************/
 
 
 
@@ -118,6 +193,9 @@ void sceneOne(){
     text("FACTS ABOUT \nCOVID-19", width/2, height/2);
   popMatrix();
 }
+/***********************
+ @desc: End of scene1
+ ************************/
 
 
 
