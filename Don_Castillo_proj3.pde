@@ -9,12 +9,15 @@
  @desc: Global Variables
  ************************/
 PFont font;
-PImage coronaBG, chinaMap, person;
+PImage coronaBG, chinaMap, person, crowd, office, desk, closeCorona, hand;
+PGraphics zoom;
 int sceneIndicator = 0;
 int TOTAL_SCENES = 6;
+int PERSON_WIDTH = 200, PERSON_HEIGHT = 150;
+int PARTICLE_SIZE = 20;
 
 // scene 2 global variables
-RedDot[] otherCases;
+ArrayList<RedDot> otherCases;
 RedDot initialCase;
 boolean displayCases;
 
@@ -23,8 +26,15 @@ boolean displayVirus;
 ArrayList<RedDot> particles;
 
 // scene4
-Person[] persons;
+ArrayList<Person> persons;
 int numOfPress = 0;
+boolean showMask;
+
+// scene 4
+RedDot[] droplets;
+
+// scene 5
+ArrayList<RedDot> handVirus;
 
  
 void setup(){
@@ -38,16 +48,23 @@ void setup(){
   coronaBG = loadImage("corona.jpg");
   chinaMap = loadImage("china.png");
   person = loadImage("person.png");
+  crowd = loadImage("crowd.jpg");
+  office = loadImage("office.jpg");
+  desk = loadImage("desktop.jpg");
+  closeCorona = loadImage("virus.png");
+  hand = loadImage("hand.jpg");
   setSceneOne();
   setSceneTwo();
   setSceneThree();
   setSceneFour();
+  setSceneSix();
 }
 
 
 void draw() {
   //sceneTwo();
   //println(wave);
+  sceneSix();
   switch(sceneIndicator) {
     case 0:
       //sceneOne();
@@ -62,13 +79,14 @@ void draw() {
       //println("scene3");
       break;
     case 3:
-      sceneFour();
-      
+      //sceneFour();
       break;
     case 4:
+      //sceneFive();
       //println("scene4");
       break;
     case 5:
+      
       //println("scene5");
       break;
     case 6:
@@ -125,20 +143,23 @@ void keyReleased() {
           int movement = 20;
           numOfPress++;
           if (numOfPress <= 6) {
-            persons[0].x = persons[0].x - movement;
-            persons[0].y = persons[0].y - movement;
+            persons.get(0).x = persons.get(0).x - movement;
+            persons.get(0).y = persons.get(0).y - movement;
             
-            persons[1].x = persons[1].x + movement;
-            persons[1].y = persons[1].y - movement;
+            persons.get(1).x = persons.get(1).x + movement;
+            persons.get(1).y = persons.get(1).y - movement;
             
-            persons[2].x = persons[2].x - movement;
-            persons[2].y = persons[2].y + movement;
+            persons.get(2).x = persons.get(2).x - movement;
+            persons.get(2).y = persons.get(2).y + movement;
             
-            persons[3].x = persons[3].x + movement;
-            persons[3].y = persons[3].y + movement;
+            persons.get(3).x = persons.get(3).x + movement;
+            persons.get(3).y = persons.get(3).y + movement;
           } 
           println("here");
       }
+    }
+    if (key == 'M' || key == 'm') {
+      showMask = true;
     }
   }
 }
@@ -146,32 +167,134 @@ void keyReleased() {
 
 
 /***********************
+ @desc: scene 6
+ ************************/
+void setSceneSix() {
+  int NUM_OF_PARTICLES = 5;
+  handVirus = new ArrayList<RedDot>();
+  // put the virus particles anywhere in the hand specified by the constrain 
+  //for (int i = 0; i < NUM_OF_PARTICLES; ++i) {
+  //  float r = random(0, 563);
+  //  float x = constrain(r, 357, 563);
+  //  float y = constrain(r, 338, 405);
+  //  handVirus.add(new RedDot(int(x), int(y), PARTICLE_SIZE));
+  //}
+
+  handVirus.add(new RedDot(470, 368, PARTICLE_SIZE)); // point 
+  handVirus.add(new RedDot(675, 352, PARTICLE_SIZE)); //thumb
+  handVirus.add(new RedDot(425, 442, PARTICLE_SIZE)); //bottom left
+  handVirus.add(new RedDot(509, 424, PARTICLE_SIZE)); // bottom right
+  handVirus.add(new RedDot(654, 125, PARTICLE_SIZE)); // bottom right
+
+}
+
+
+void sceneSix() {
+  float d = dist(float(width/2), float(height/2), float(mouseX), float(mouseY));
+  
+  imageMode(CENTER);
+  background(50);
+  
+  image(hand, width/2, height/2, width, height);  
+  filter(BLUR, map(d, 10, 300, 0, 20));
+  
+  
+  // draw cursor
+  strokeWeight(3);
+  float lineLength = 40.00;
+  line(width/2, height/2, width/2, height/2 + lineLength); // center - down
+  line(width/2, height/2, width/2  + lineLength, height/2); // center - right
+  line(width/2, height/2, width/2, height/2 - lineLength); // center - up
+  line(width/2, height/2, width/2 - lineLength, height/2); // center - left
+  
+  
+  //fill(color(227, 85, 57));
+  //int h = constrain(mouseY, 10, 300);
+  //int w = constrain(mouseX, 10, 300);
+  //float d = dist(float(width/2), float(height/2), float(mouseX), float(mouseY));
+  float c = constrain(d, 10, 100);
+  println(d);
+  //ellipse(width/2, height/2, d, d);
+  //ellipse(width/2, height/2, d, d);
+
+  for (RedDot r : handVirus) {
+    if (d > 65) {
+      r.displayAsImage();
+      //r.rotateClockwise();
+    } else {
+      r.display();
+    } 
+    r.radius = int(c);
+    //r.transparency = int(d);
+  }
+    
+}
+/***********************
+ @desc: scene 6
+ ************************/
+
+
+/***********************
+ @desc: scene 5
+ ************************/
+ void sceneFive() {
+   setBackground(desk, color(100, 100, 100));
+   loadPixels();
+   for (int x = 0; x < width; x++) {
+     for (int y = 0; y < height; y++) {
+
+       int loc = x + y * width;
+       float r = red(desk.pixels[loc]);
+       float g = green(desk.pixels[loc]);
+       float b = blue(desk.pixels[loc]);
+       float d = dist(mouseX, mouseY, x, y);
+       float factor = map(d, 0, 200, 2, 0);
+       pixels[loc] = color(r*factor, g*factor, b*factor);
+     }
+   }
+   updatePixels();
+   String firstText = "COVID-19 particles may be\npresent anywhere. The best way\nto avoid them is to disinfect\neverything we come in contact with.";
+   TextBox firstBox = new TextBox(556, 397, 400, 130, firstText, 24);
+   firstBox.display();
+ }
+ /***********************
+ @desc: scene 5
+ ************************/
+
+
+
+
+
+/***********************
  @desc: scene 4
  ************************/
 void setSceneFour(){
-   persons = new Person[4];
+   persons = new ArrayList<Person>();
    int offset = 20;
-   int personWidth = 50;
-   int personHeight = 120;
-   persons[0] = new Person(width/3 - offset , height/2 - offset, personWidth, personHeight); // topleft
-   persons[1] = new Person(width/3 + offset , height/2 - offset, personWidth, personHeight); // topright
-   persons[2] = new Person(width/3 - offset , height/2 + offset, personWidth, personHeight); // bottomleft
-   persons[3] = new Person(width/3 + offset , height/2 + offset, personWidth, personHeight); // bottomright
+   showMask = false;
    
-   
+   persons.add(new Person(width/3 - offset , height/2 - offset, PERSON_WIDTH, PERSON_HEIGHT)); // topleft
+   persons.add(new Person(width/3 + offset , height/2 - offset, PERSON_WIDTH, PERSON_HEIGHT)); // topright
+   persons.add(new Person(width/3 - offset , height/2 + offset, PERSON_WIDTH, PERSON_HEIGHT)); // bottomleft
+   persons.add(new Person(width/3 + offset , height/2 + offset, PERSON_WIDTH, PERSON_HEIGHT)); // bottomright
 }
  
 void sceneFour() {
-  background(0, 255, 255);
-  persons[0].display();
-  persons[1].display();
-  persons[2].display();
-  persons[3].display();
+  setBackground(crowd, color(149, 149, 149));
+  
+  // display persons
+  for (Person p : persons)
+    p.display();
+
   // textbox
   if (numOfPress >= 6) {
     String firstText = "Social distancing is they key\nto minimize the spread of COVID-19.";
     TextBox firstBox = new TextBox(556, 397, 400, 70, firstText, 24);
     firstBox.display();
+    if (showMask) {
+      for (Person p : persons)
+        p.addMask();
+    }
   }
 }
  /***********************
@@ -182,6 +305,7 @@ void sceneFour() {
 
 /***********************
  @desc: scene 3
+ @todo: add a sneezing sound
  ************************/
  void setSceneThree(){
    displayVirus = false;
@@ -189,18 +313,34 @@ void sceneFour() {
  }
  
  void sceneThree() {
-  background(255);
+  setBackground(office, color(168,112,65));
 
   // add everytime
   if (displayVirus) {
     // add particles where mouse is pressed
     int offsetX = int(random(0.00, 50.00));
     int offsetY = int(random(0.00, 50.00));
+    int initTrans = -10;
     if (mousePressed) {
-          particles.add(new RedDot(mouseX - offsetX, mouseY + offsetY, 20, -10));
-          particles.add(new RedDot(mouseX + offsetX, mouseY + offsetY, 20, -10));
-          particles.add(new RedDot(mouseX + offsetX, mouseY - offsetY, 20, -10));
-          particles.add(new RedDot(mouseX - offsetX, mouseY - offsetY, 20, -10));
+          RedDot r = new RedDot(mouseX - offsetX, mouseY + offsetY, 20);
+          r.setTransparency(initTrans);
+          particles.add(r);
+          
+          r = new RedDot(mouseX - offsetX, mouseY + offsetY, 20);
+          r.setTransparency(initTrans);
+          particles.add(r);
+          
+          r = new RedDot(mouseX + offsetX, mouseY + offsetY, 20);
+          r.setTransparency(initTrans);
+          particles.add(r);
+          
+          r = new RedDot(mouseX + offsetX, mouseY - offsetY, 20);
+          r.setTransparency(initTrans);
+          particles.add(r);
+          
+          r = new RedDot(mouseX - offsetX, mouseY - offsetY, 20);
+          r.setTransparency(initTrans);
+          particles.add(r);
     }
     
     for(int i = 0; i < particles.size(); i++) {
@@ -208,6 +348,7 @@ void sceneFour() {
       int direction = i % 8;
       redDot.setSpeed(1);
       redDot.display();
+      redDot.increaseTransparency();
       
       switch(direction) {
         case 0:
@@ -240,7 +381,7 @@ void sceneFour() {
   // mouse image
   pushMatrix();
     imageMode(CENTER);
-    image(person, mouseX, mouseY, 50, 120);
+    image(person, mouseX, mouseY, 200, 150);
   popMatrix();
   
   // information
@@ -262,30 +403,95 @@ void sceneFour() {
  ************************/
 void setSceneTwo(){
   displayCases = false;
-  initialCase = new RedDot(440, 270, 20, 0);
-  otherCases = new RedDot[21];
+ 
+  // initialize all the red dots and their initial transparency
+  initialCase = new RedDot(440, 270, 20);
+  initialCase.setTransparency(0);
+  otherCases = new ArrayList<RedDot>();
   
-  otherCases[0] = new RedDot(456, 229, 10, -50);
-  otherCases[1] = new RedDot(418, 245, 10, -1);
-  otherCases[2] = new RedDot(463, 290, 10, -11);
-  otherCases[3] = new RedDot(478, 259, 10, -18);
-  otherCases[4] = new RedDot(419, 240, 10, -24);
-  otherCases[5] = new RedDot(445, 243, 10, -30);
-  otherCases[6] = new RedDot(412, 332, 10, -70);
-  otherCases[7] = new RedDot(395, 218, 10, -6);
-  otherCases[8] = new RedDot(378, 244, 10, -67);
-  otherCases[9] = new RedDot(269, 262, 10, -9);
-  otherCases[10] = new RedDot(184, 232, 10, -68);
-  otherCases[11] = new RedDot(368, 335, 10, -35);
-  otherCases[12] = new RedDot(380, 285, 10, -7);
-  otherCases[13] = new RedDot(487, 296, 10, -81);
-  otherCases[14] = new RedDot(456, 229, 10, -51);
-  otherCases[15] = new RedDot(505, 314, 10, -82);
-  otherCases[16] = new RedDot(451, 330, 10, -74);
-  otherCases[17] = new RedDot(259, 163, 10, -50);
-  otherCases[18] = new RedDot(367, 172, 10, -23);
-  otherCases[19] = new RedDot(217, 271, 10, -24);
-  otherCases[20] = new RedDot(539, 284, 10, -66);
+  RedDot r1 = new RedDot(456, 229, 10);
+  r1.setTransparency(-50);
+  otherCases.add(r1);
+  
+  RedDot r2 = new RedDot(418, 245, 10);
+  r2.setTransparency(-1);
+  otherCases.add(r2);
+  
+  RedDot r3 = new RedDot(463, 290, 10);
+  r3.setTransparency(-11);
+  otherCases.add(r3);
+  
+  RedDot r4 = new RedDot(478, 259, 10);
+  r4.setTransparency(-18);
+  otherCases.add(r4);
+  
+  RedDot r5 = new RedDot(419, 240, 10);
+  r5.setTransparency(-24);
+  otherCases.add(r5);
+  
+  RedDot r6 = new RedDot(445, 243, 10);
+  r6.setTransparency(-30);
+  otherCases.add(r6);
+  
+  RedDot r7 = new RedDot(412, 332, 10);
+  r7.setTransparency(-70);
+  otherCases.add(r7);
+  
+  RedDot r8 = new RedDot(395, 218, 10);
+  r8.setTransparency(-6);
+  otherCases.add(r8);
+  
+  RedDot r9 = new RedDot(378, 244, 10);
+  r9.setTransparency(-67);
+  otherCases.add(r9);
+  
+  RedDot r10 = new RedDot(269, 262, 10);
+  r10.setTransparency(-9);
+  otherCases.add(r10);
+  
+  RedDot r11 = new RedDot(184, 232, 10);
+  r11.setTransparency(-68);
+  otherCases.add(r11);
+  
+  RedDot r12 = new RedDot(368, 335, 10);
+  r12.setTransparency(-35);
+  otherCases.add(r12);
+  
+  RedDot r13 = new RedDot(380, 285, 10);
+  r13.setTransparency(-7);
+  otherCases.add(r13);
+  
+  RedDot r14 = new RedDot(487, 296, 10);
+  r4.setTransparency(-81);
+  otherCases.add(r14);
+  
+  RedDot r15 = new RedDot(456, 229, 10);
+  r15.setTransparency(-51);
+  otherCases.add(r15);
+  
+  RedDot r16 = new RedDot(505, 314, 10);
+  r16.setTransparency(-82);
+  otherCases.add(r16);
+  
+  RedDot r17 = new RedDot(451, 330, 10);
+  r17.setTransparency(-74);
+  otherCases.add(r17);
+  
+  RedDot r18 = new RedDot(259, 163, 10);
+  r18.setTransparency(-50);
+  otherCases.add(r18);
+  
+  RedDot r19 = new RedDot(367, 172, 10);
+  r19.setTransparency(-23);
+  otherCases.add(r19);
+  
+  RedDot r20 = new RedDot(217, 271, 10);
+  r20.setTransparency(-24);
+  otherCases.add(r20);
+  
+  RedDot r21 = new RedDot(539, 284, 10);
+  r21.setTransparency(-66);
+  otherCases.add(r21);
 }
 
 void sceneTwo(){
@@ -309,12 +515,16 @@ void sceneTwo(){
     
     // initial case
     initialCase.display();
+    initialCase.increaseTransparency();
     
     // more cases
     // show everything here once the button is clicked
     if (displayCases) {
-      for(RedDot c : otherCases)
+      for(RedDot c : otherCases) {
         c.display(); 
+        c.increaseTransparency();
+      }
+        
       String thirdText = "It then spreads throughout the\nnearby cities and provinces\nprompting the authorities to\nlock them down.";
       TextBox thirdBox = new TextBox(556, 397, 340, 125, thirdText, 24);
       thirdBox.display();
@@ -378,7 +588,9 @@ void incrementScene() {
  @params:  image to be displayed
  ************************/
 void setBackground(PImage pImage, color pColor) {
+  pushStyle();
   tint(pColor);
   imageMode(CENTER);
   image(pImage, width/2, height/2, width, height);
+  popStyle();
 }

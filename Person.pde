@@ -1,6 +1,8 @@
 class Person extends RedDot {
   
   PImage person = loadImage("person.png");
+  PImage personMasked = loadImage("person-mask.png");
+  PImage personVar;
 
   int w;
   int h;
@@ -9,18 +11,23 @@ class Person extends RedDot {
   
   
   Person (int pX, int pY, int pW, int pH) {
-     super(pX, pY, 0, 0.00);
+     super(pX, pY, 0);
      x = pX;
      y = pY;
      w = pW;
      h = pH;
+     personVar = person;
   }
   
   void display() {
     pushMatrix();
       imageMode(CENTER);
-      image(person, x, y, w, h);
+      image(personVar, x, y, w, h);
     popMatrix();
+  }
+  
+  void addMask(){
+      personVar = personMasked;
   }
   
 }
