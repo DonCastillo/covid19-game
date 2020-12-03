@@ -31,5 +31,9 @@
   1. Click anywhere on the screen to view the COVID-19 transmission
   2. Press spacebar to go to the next scene
 
+  Warning:
+  Due to the size of the images, the program might lag or be unresponsive sometimes 
+  (e.g. entering the spacebar may delay the transition to the next scene).
+
 
 */
