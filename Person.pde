@@ -1,4 +1,4 @@
-class Person extends RedDot {
+class Person extends Virus {
   
   PImage person = loadImage("person.png");
   PImage personMasked = loadImage("person-mask.png");

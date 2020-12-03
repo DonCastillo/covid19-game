@@ -1,4 +1,4 @@
-class RedDot {
+class Virus {
 
   int x; 
   int y;
@@ -11,7 +11,7 @@ class RedDot {
   int speed = 20;
   PImage image = loadImage("virus.png");
   
-  RedDot(int pX, int pY, int pRadius) {
+  Virus(int pX, int pY, int pRadius) {
     x = pX;
     y = pY;
     radius = pRadius;
@@ -34,6 +34,11 @@ class RedDot {
       float rX = random(0.00, 20.00);
       float rY = random(0.00, 20.00);
       image(image, x + rX, y + rY, radius, radius);
+  }
+
+
+  void setColor(color pColor){
+    shade = pColor;
   }
   
   void rotateClockwise() {

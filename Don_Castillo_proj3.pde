@@ -17,13 +17,13 @@ int PERSON_WIDTH = 200, PERSON_HEIGHT = 150;
 int PARTICLE_SIZE = 20;
 
 // scene 2 global variables
-ArrayList<RedDot> otherCases;
-RedDot initialCase;
+ArrayList<Virus> otherCases;
+Virus initialCase;
 boolean displayCases;
 
 // scene 3
 boolean displayVirus;
-ArrayList<RedDot> particles;
+ArrayList<Virus> particles;
 
 // scene4
 ArrayList<Person> persons;
@@ -31,10 +31,14 @@ int numOfPress = 0;
 boolean showMask;
 
 // scene 4
-RedDot[] droplets;
+Virus[] droplets;
 
 // scene 5
-ArrayList<RedDot> handVirus;
+ArrayList<Virus> handVirus;
+
+// scene 7
+ArrayList<WhiteParticle> whiteParticles;
+RedParticle redParticle;
 
  
 void setup(){
@@ -58,13 +62,14 @@ void setup(){
   setSceneThree();
   setSceneFour();
   setSceneSix();
+  setSceneSeven();
 }
 
 
 void draw() {
   //sceneTwo();
   //println(wave);
-  sceneSix();
+  sceneSeven();
   switch(sceneIndicator) {
     case 0:
       //sceneOne();
@@ -86,10 +91,11 @@ void draw() {
       //println("scene4");
       break;
     case 5:
-      
+      //sceneSix();
       //println("scene5");
       break;
     case 6:
+      
       //println("scene6");
       break;
   }  
@@ -167,24 +173,54 @@ void keyReleased() {
 
 
 /***********************
+ @desc: scene 7
+ ************************/
+void setSceneSeven(){
+  int NUM_OF_PARTICLES = 500;
+  whiteParticles = new ArrayList<WhiteParticle>();
+  
+  //redDot = new Virus(mouseX)
+  for(int i = 0; i < NUM_OF_PARTICLES; ++i){
+    int oX = int(random(0, width));
+    int oY = int(random(0, height));
+    WhiteParticle w = new WhiteParticle(oX, oY, PARTICLE_SIZE);
+    w.setColor(color(255));
+    w.setSpeed(5);
+    w.setBoundary(0, width, 0, height);
+    whiteParticles.add(w);
+  }
+}
+
+void sceneSeven(){
+  background(0);
+  for(WhiteParticle w : whiteParticles){
+    w.changeDirection();
+    w.move();
+    
+    w.display();
+    //println(w.x);
+    
+  }
+}
+
+/***********************
+ @desc: scene 7
+ ************************/
+
+
+
+/***********************
  @desc: scene 6
  ************************/
 void setSceneSix() {
-  int NUM_OF_PARTICLES = 5;
-  handVirus = new ArrayList<RedDot>();
-  // put the virus particles anywhere in the hand specified by the constrain 
-  //for (int i = 0; i < NUM_OF_PARTICLES; ++i) {
-  //  float r = random(0, 563);
-  //  float x = constrain(r, 357, 563);
-  //  float y = constrain(r, 338, 405);
-  //  handVirus.add(new RedDot(int(x), int(y), PARTICLE_SIZE));
-  //}
 
-  handVirus.add(new RedDot(470, 368, PARTICLE_SIZE)); // point 
-  handVirus.add(new RedDot(675, 352, PARTICLE_SIZE)); //thumb
-  handVirus.add(new RedDot(425, 442, PARTICLE_SIZE)); //bottom left
-  handVirus.add(new RedDot(509, 424, PARTICLE_SIZE)); // bottom right
-  handVirus.add(new RedDot(654, 125, PARTICLE_SIZE)); // bottom right
+  handVirus = new ArrayList<Virus>();
+
+  handVirus.add(new Virus(470, 368, PARTICLE_SIZE)); // point 
+  handVirus.add(new Virus(675, 352, PARTICLE_SIZE)); //thumb
+  handVirus.add(new Virus(425, 442, PARTICLE_SIZE)); //bottom left
+  handVirus.add(new Virus(509, 424, PARTICLE_SIZE)); // bottom right
+  handVirus.add(new Virus(654, 125, PARTICLE_SIZE)); // bottom right
 
 }
 
@@ -198,7 +234,6 @@ void sceneSix() {
   image(hand, width/2, height/2, width, height);  
   filter(BLUR, map(d, 10, 300, 0, 20));
   
-  
   // draw cursor
   strokeWeight(3);
   float lineLength = 40.00;
@@ -207,25 +242,17 @@ void sceneSix() {
   line(width/2, height/2, width/2, height/2 - lineLength); // center - up
   line(width/2, height/2, width/2 - lineLength, height/2); // center - left
   
-  
-  //fill(color(227, 85, 57));
-  //int h = constrain(mouseY, 10, 300);
-  //int w = constrain(mouseX, 10, 300);
-  //float d = dist(float(width/2), float(height/2), float(mouseX), float(mouseY));
   float c = constrain(d, 10, 100);
   println(d);
-  //ellipse(width/2, height/2, d, d);
-  //ellipse(width/2, height/2, d, d);
 
-  for (RedDot r : handVirus) {
+
+  for (Virus r : handVirus) {
     if (d > 65) {
       r.displayAsImage();
-      //r.rotateClockwise();
     } else {
       r.display();
     } 
     r.radius = int(c);
-    //r.transparency = int(d);
   }
     
 }
@@ -309,7 +336,7 @@ void sceneFour() {
  ************************/
  void setSceneThree(){
    displayVirus = false;
-   particles = new ArrayList<RedDot>();
+   particles = new ArrayList<Virus>();
  }
  
  void sceneThree() {
@@ -322,58 +349,58 @@ void sceneFour() {
     int offsetY = int(random(0.00, 50.00));
     int initTrans = -10;
     if (mousePressed) {
-          RedDot r = new RedDot(mouseX - offsetX, mouseY + offsetY, 20);
+          Virus r = new Virus(mouseX - offsetX, mouseY + offsetY, 20);
           r.setTransparency(initTrans);
           particles.add(r);
           
-          r = new RedDot(mouseX - offsetX, mouseY + offsetY, 20);
+          r = new Virus(mouseX - offsetX, mouseY + offsetY, 20);
           r.setTransparency(initTrans);
           particles.add(r);
           
-          r = new RedDot(mouseX + offsetX, mouseY + offsetY, 20);
+          r = new Virus(mouseX + offsetX, mouseY + offsetY, 20);
           r.setTransparency(initTrans);
           particles.add(r);
           
-          r = new RedDot(mouseX + offsetX, mouseY - offsetY, 20);
+          r = new Virus(mouseX + offsetX, mouseY - offsetY, 20);
           r.setTransparency(initTrans);
           particles.add(r);
           
-          r = new RedDot(mouseX - offsetX, mouseY - offsetY, 20);
+          r = new Virus(mouseX - offsetX, mouseY - offsetY, 20);
           r.setTransparency(initTrans);
           particles.add(r);
     }
     
     for(int i = 0; i < particles.size(); i++) {
-      RedDot redDot = particles.get(i);
+      Virus Virus = particles.get(i);
       int direction = i % 8;
-      redDot.setSpeed(1);
-      redDot.display();
-      redDot.increaseTransparency();
+      Virus.setSpeed(1);
+      Virus.display();
+      Virus.increaseTransparency();
       
       switch(direction) {
         case 0:
-          redDot.ascend();
+          Virus.ascend();
           break;
         case 1:
-          redDot.descend();
+          Virus.descend();
           break;
         case 2:
-          redDot.forward();
+          Virus.forward();
           break;
         case 3:
-          redDot.backward();
+          Virus.backward();
           break;
         case 4:
-          redDot.toBottomLeft();
+          Virus.toBottomLeft();
           break;
         case 5:
-          redDot.toBottomRight();
+          Virus.toBottomRight();
           break;
         case 6:
-          redDot.toTopLeft();
+          Virus.toTopLeft();
           break;
         case 7:
-          redDot.toTopRight();
+          Virus.toTopRight();
           break;
       }
     }
@@ -405,91 +432,91 @@ void setSceneTwo(){
   displayCases = false;
  
   // initialize all the red dots and their initial transparency
-  initialCase = new RedDot(440, 270, 20);
+  initialCase = new Virus(440, 270, 20);
   initialCase.setTransparency(0);
-  otherCases = new ArrayList<RedDot>();
+  otherCases = new ArrayList<Virus>();
   
-  RedDot r1 = new RedDot(456, 229, 10);
+  Virus r1 = new Virus(456, 229, 10);
   r1.setTransparency(-50);
   otherCases.add(r1);
   
-  RedDot r2 = new RedDot(418, 245, 10);
+  Virus r2 = new Virus(418, 245, 10);
   r2.setTransparency(-1);
   otherCases.add(r2);
   
-  RedDot r3 = new RedDot(463, 290, 10);
+  Virus r3 = new Virus(463, 290, 10);
   r3.setTransparency(-11);
   otherCases.add(r3);
   
-  RedDot r4 = new RedDot(478, 259, 10);
+  Virus r4 = new Virus(478, 259, 10);
   r4.setTransparency(-18);
   otherCases.add(r4);
   
-  RedDot r5 = new RedDot(419, 240, 10);
+  Virus r5 = new Virus(419, 240, 10);
   r5.setTransparency(-24);
   otherCases.add(r5);
   
-  RedDot r6 = new RedDot(445, 243, 10);
+  Virus r6 = new Virus(445, 243, 10);
   r6.setTransparency(-30);
   otherCases.add(r6);
   
-  RedDot r7 = new RedDot(412, 332, 10);
+  Virus r7 = new Virus(412, 332, 10);
   r7.setTransparency(-70);
   otherCases.add(r7);
   
-  RedDot r8 = new RedDot(395, 218, 10);
+  Virus r8 = new Virus(395, 218, 10);
   r8.setTransparency(-6);
   otherCases.add(r8);
   
-  RedDot r9 = new RedDot(378, 244, 10);
+  Virus r9 = new Virus(378, 244, 10);
   r9.setTransparency(-67);
   otherCases.add(r9);
   
-  RedDot r10 = new RedDot(269, 262, 10);
+  Virus r10 = new Virus(269, 262, 10);
   r10.setTransparency(-9);
   otherCases.add(r10);
   
-  RedDot r11 = new RedDot(184, 232, 10);
+  Virus r11 = new Virus(184, 232, 10);
   r11.setTransparency(-68);
   otherCases.add(r11);
   
-  RedDot r12 = new RedDot(368, 335, 10);
+  Virus r12 = new Virus(368, 335, 10);
   r12.setTransparency(-35);
   otherCases.add(r12);
   
-  RedDot r13 = new RedDot(380, 285, 10);
+  Virus r13 = new Virus(380, 285, 10);
   r13.setTransparency(-7);
   otherCases.add(r13);
   
-  RedDot r14 = new RedDot(487, 296, 10);
+  Virus r14 = new Virus(487, 296, 10);
   r4.setTransparency(-81);
   otherCases.add(r14);
   
-  RedDot r15 = new RedDot(456, 229, 10);
+  Virus r15 = new Virus(456, 229, 10);
   r15.setTransparency(-51);
   otherCases.add(r15);
   
-  RedDot r16 = new RedDot(505, 314, 10);
+  Virus r16 = new Virus(505, 314, 10);
   r16.setTransparency(-82);
   otherCases.add(r16);
   
-  RedDot r17 = new RedDot(451, 330, 10);
+  Virus r17 = new Virus(451, 330, 10);
   r17.setTransparency(-74);
   otherCases.add(r17);
   
-  RedDot r18 = new RedDot(259, 163, 10);
+  Virus r18 = new Virus(259, 163, 10);
   r18.setTransparency(-50);
   otherCases.add(r18);
   
-  RedDot r19 = new RedDot(367, 172, 10);
+  Virus r19 = new Virus(367, 172, 10);
   r19.setTransparency(-23);
   otherCases.add(r19);
   
-  RedDot r20 = new RedDot(217, 271, 10);
+  Virus r20 = new Virus(217, 271, 10);
   r20.setTransparency(-24);
   otherCases.add(r20);
   
-  RedDot r21 = new RedDot(539, 284, 10);
+  Virus r21 = new Virus(539, 284, 10);
   r21.setTransparency(-66);
   otherCases.add(r21);
 }
@@ -520,7 +547,7 @@ void sceneTwo(){
     // more cases
     // show everything here once the button is clicked
     if (displayCases) {
-      for(RedDot c : otherCases) {
+      for(Virus c : otherCases) {
         c.display(); 
         c.increaseTransparency();
       }
