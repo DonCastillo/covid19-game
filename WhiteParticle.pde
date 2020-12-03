@@ -1,17 +1,32 @@
 class WhiteParticle extends Virus {
 
     //int x, y, radius;
-    boolean infected = false;
+    boolean infected;
     int initDirection;
     int bX1, bX2, bY1, bY2;
+    int infectionCount;
+    int INFECTION_MAX = 2;
 
-    WhiteParticle(int pX, int pY, int pRadius) {
+    WhiteParticle(int pX, int pY, int pRadius, boolean pInfected) {
         super(pX, pY, pRadius);
-        super.setColor(color(255)); // make this cell white
-        // x = pX;
-        // y = pY;
-        // radius = pRadius;
+        infectionCount = 0;
+        infected = pInfected;
+        if(infected){
+          super.setColor(color(227, 85, 57)); // make red
+        } else {
+          super.setColor(color(255)); // make this cell white
+        }
         randomizeMove();
+    }
+
+    void infect(WhiteParticle w) {
+      
+      float distance = dist(super.x, super.y, w.x, w.y);
+      if (distance < super.radius + w.radius) {
+          w.infected = true;
+          infectionCount++;
+          w.setColor(color(227, 85, 57));
+      }
     }
 
     void setBoundary(int x1, int x2, int y1, int y2){
