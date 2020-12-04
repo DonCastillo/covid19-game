@@ -287,7 +287,7 @@ void setSceneSix() {
       int oX = int(random(0, width));
       int oY = int(random(0, height));
       WhiteParticle w = new WhiteParticle(oX, oY, PARTICLE_SIZE, false);
-      w.setSpeed(0.2);
+      w.setSpeed(3);
       w.setBoundary(0, width, 0, height); // boundary that prevents particle from going off screen
       whiteParticles.add(w);
   }
@@ -346,7 +346,7 @@ void sceneSix() {
         shows 4 people social distancing
  ************************/
 void setSceneFive(){
-   int numOfPress = 0;
+   numOfPress = 0;
    int offset = 20; // margin
    showMask = false;
 
@@ -411,9 +411,9 @@ void sceneFive() {
 
     // manipulate image pixels
     loadPixels();
-    for (int x = 0; x < width; x++) 
+    for (int x = 0; x < desk.width; x++) 
     {
-        for (int y = 0; y < height; y++) 
+        for (int y = 0; y < desk.height; y++) 
         {
             int loc = x + y * width;
             float r = red(desk.pixels[loc]);
@@ -805,7 +805,7 @@ void incrementScene() {
 }
 
 /***********************
- @desc: sets the scenes background image
+ @desc: sets the scenes background image without tint
  @params:  image to be displayed
  ************************/
 void setBackground(PImage pImage) {
@@ -816,7 +816,7 @@ void setBackground(PImage pImage) {
 }
 
 /***********************
- @desc: sets the scenes background image
+ @desc: sets the scenes background image with tint
  @params:  image to be displayed
  ************************/
 void setBackground(PImage pImage, color pColor) {
