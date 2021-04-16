@@ -35,21 +35,12 @@ Due to the size of the images, the program might lag or be unresponsive sometime
 (e.g. entering the spacebar may delay the transition to the next scene).
 
 ## Demo
-<style>
-    div {
-        display:flex;
-        flex-wrap:wrap:
-        flex-direction:row;
-    }
-    img{
-        height:75%
-    }
-</style>
+
 <div>
-    <img src="./screenshots/frame-0.png" alt="frame 0">
-    <img src="./screenshots/frame-1.gif" alt="frame 1">
-    <img src="./screenshots/frame-2.gif" alt="frame 2">
-    <img src="./screenshots/frame-3.gif" alt="frame 3">
-    <img src="./screenshots/frame-4.gif" alt="frame 4">
-    <img src="./screenshots/frame-5.gif" alt="frame 5">
+    <img src="./screenshots/frame-0.png" height="250" alt="frame 0">
+    <img src="./screenshots/frame-1.gif" height="250" alt="frame 1">
+    <img src="./screenshots/frame-2.gif" height="250" alt="frame 2">
+    <img src="./screenshots/frame-3.gif" height="250" alt="frame 3">
+    <img src="./screenshots/frame-4.gif" height="250" alt="frame 4">
+    <img src="./screenshots/frame-5.gif" height="250" alt="frame 5">
 </div>
